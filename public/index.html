@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamFlix - Watch Movies & Series</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <h1 class="logo">StreamFlix</h1>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="#" data-page="home" class="active">Home</a></li>
+                    <li><a href="#" data-page="movies">Movies</a></li>
+                    <li><a href="#" data-page="series">TV Series</a></li>
+                    <li><a href="#" data-page="mylist">My List</a></li>
+                </ul>
+            </div>
+            <div class="nav-right">
+                <input type="text" id="searchInput" placeholder="Search..." class="search-input">
+                <div class="profile-menu">
+                    <img src="https://via.placeholder.com/40" alt="Profile" class="profile-avatar" id="profileAvatar">
+                    <div class="dropdown" id="profileDropdown">
+                        <div class="dropdown-item" id="manageProfiles">Manage Profiles</div>
+                        <div class="dropdown-item" id="logoutBtn">Sign Out</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Auth Screen -->
+    <div id="authScreen" class="auth-screen">
+        <div class="auth-container">
+            <h1 class="logo">StreamFlix</h1>
+            <div class="auth-box">
+                <h2 id="authTitle">Sign In</h2>
+                <form id="authForm">
+                    <input type="email" id="authEmail" placeholder="Email" required>
+                    <input type="password" id="authPassword" placeholder="Password" required>
+                    <button type="submit" class="btn-primary" id="authSubmit">Sign In</button>
+                </form>
+                <p class="auth-toggle">
+                    <span id="authToggleText">New to StreamFlix?</span>
+                    <a href="#" id="authToggleLink">Sign up now</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Selection -->
+    <div id="profileScreen" class="profile-screen hidden">
+        <div class="profile-container">
+            <h1>Who's watching?</h1>
+            <div class="profiles-grid" id="profilesGrid"></div>
+            <button class="btn-secondary" id="addProfileBtn">Add Profile</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="mainContent" class="main-content hidden">
+        <!-- Featured Content -->
+        <div class="featured" id="featured">
+            <div class="featured-content">
+                <h2 class="featured-title" id="featuredTitle"></h2>
+                <p class="featured-description" id="featuredDescription"></p>
+                <div class="featured-buttons">
+                    <button class="btn-play" id="featuredPlay">
+                        <span>▶</span> Play
+                    </button>
+                    <button class="btn-info" id="featuredInfo">
+                        <span>ℹ</span> More Info
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Rows -->
+        <div class="content-rows" id="contentRows">
+            <div class="content-row">
+                <h3>Trending Now</h3>
+                <div class="row-items" id="trendingRow"></div>
+            </div>
+            <div class="content-row">
+                <h3>Action</h3>
+                <div class="row-items" id="actionRow"></div>
+            </div>
+            <div class="content-row">
+                <h3>Comedy</h3>
+                <div class="row-items" id="comedyRow"></div>
+            </div>
+            <div class="content-row">
+                <h3>Drama</h3>
+                <div class="row-items" id="dramaRow"></div>
+            </div>
+            <div class="content-row">
+                <h3>Documentaries</h3>
+                <div class="row-items" id="documentaryRow"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Player Modal -->
+    <div id="playerModal" class="modal hidden">
+        <div class="modal-content player-container">
+            <button class="close-btn" id="closePlayer">&times;</button>
+            <video id="videoPlayer" controls>
+                <source src="" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="player-info">
+                <h2 id="playerTitle"></h2>
+                <p id="playerDescription"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Details Modal -->
+    <div id="detailsModal" class="modal hidden">
+        <div class="modal-content details-container">
+            <button class="close-btn" id="closeDetails">&times;</button>
+            <div class="details-header">
+                <img id="detailsThumbnail" src="" alt="">
+                <div class="details-overlay">
+                    <h2 id="detailsTitle"></h2>
+                    <div class="details-meta">
+                        <span id="detailsYear"></span>
+                        <span id="detailsRating"></span>
+                        <span id="detailsDuration"></span>
+                    </div>
+                    <p id="detailsDescription"></p>
+                    <div class="details-buttons">
+                        <button class="btn-play" id="detailsPlay">
+                            <span>▶</span> Play
+                        </button>
+                        <button class="btn-secondary" id="detailsAddList">
+                            <span>+</span> My List
+                        </button>
+                    </div>
+                    <div class="details-info">
+                        <p><strong>Cast:</strong> <span id="detailsCast"></span></p>
+                        <p><strong>Genres:</strong> <span id="detailsGenres"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
