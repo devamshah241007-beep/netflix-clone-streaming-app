@@ -17,22 +17,40 @@ export async function POST(req: Request) {
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
     const customerEmail = session.customer_details?.email;
+    const stripeSubscriptionId = typeof session.subscription === "string" ? session.subscription : null;
     if (customerEmail) {
       const user = await prisma.user.findUnique({ where: { email: customerEmail } });
       if (user) {
         const basicPlan = await prisma.plan.findFirst({ where: { name: "Basic" } });
         if (basicPlan) {
-          await prisma.subscription.upsert({
-            where: { stripeSubscriptionId: (session.subscription as string) || "" },
-            update: { status: "ACTIVE", planId: basicPlan.id, userId: user.id },
-            create: {
-              userId: user.id,
-              planId: basicPlan.id,
-              stripeCustomerId: (session.customer as string) || undefined,
-              stripeSubscriptionId: (session.subscription as string) || undefined,
-              status: "ACTIVE"
+          if (stripeSubscriptionId) {
+            await prisma.subscription.upsert({
+              where: { stripeSubscriptionId },
+              update: { status: "ACTIVE", planId: basicPlan.id, userId: user.id },
+              create: {
+                userId: user.id,
+                planId: basicPlan.id,
+                stripeCustomerId: (session.customer as string) || undefined,
+                stripeSubscriptionId,
+                status: "ACTIVE"
+              }
+            });
+          } else {
+            const existing = await prisma.subscription.findFirst({
+              where: { userId: user.id, status: "ACTIVE" },
+              orderBy: { createdAt: "desc" }
+            });
+            if (!existing) {
+              await prisma.subscription.create({
+                data: {
+                  userId: user.id,
+                  planId: basicPlan.id,
+                  stripeCustomerId: (session.customer as string) || undefined,
+                  status: "ACTIVE"
+                }
+              });
             }
-          });
+          }
         }
       }
     }

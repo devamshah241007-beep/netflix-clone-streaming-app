@@ -1,12 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 
-export default function StoreEditorPage({ params }: { params: Promise<{ storeId: string }> }) {
-  const [storeId, setStoreId] = useState("");
-  const [data, setData] = useState<any>(null);
+type StoreEditorData = {
+  id: string;
+  name: string;
+  heroCopy: string | null;
+  cta: string | null;
+  status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+};
 
-  useEffect(() => { params.then((p) => setStoreId(p.storeId)); }, [params]);
+export default function StoreEditorPage() {
+  const params = useParams<{ storeId: string }>();
+  const storeId = params.storeId;
+  const [data, setData] = useState<StoreEditorData | null>(null);
+
   useEffect(() => {
     if (!storeId) return;
     fetch(`/api/stores/${storeId}`).then((r) => r.json()).then(setData);
