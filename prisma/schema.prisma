@@ -1,0 +1,242 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  RETAILER
+  SUPPLIER
+  ADMIN
+}
+
+enum StoreStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum SupplierStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  INCOMPLETE
+}
+
+model User {
+  id              String            @id @default(cuid())
+  email           String            @unique
+  passwordHash    String?
+  name            String?
+  role            UserRole          @default(RETAILER)
+  image           String?
+  isActive        Boolean           @default(true)
+  emailVerified   DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  retailerProfile RetailerProfile?
+  supplierProfile SupplierProfile?
+  adminProfile    AdminProfile?
+  stores          Store[]
+  products        Product[]
+  generations     AIGeneration[]
+  subscriptions   Subscription[]
+  trials          Trial[]
+  usageMetrics    UsageMetrics[]
+  assets          UploadedAsset[]
+  payments        Payment[]
+}
+
+model RetailerProfile {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  businessName   String?
+  niche          String?
+  onboardingDone Boolean  @default(false)
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model SupplierProfile {
+  id              String         @id @default(cuid())
+  userId          String         @unique
+  businessName    String
+  shippingInfo    String?
+  deliveryZones   String?
+  payoutMethod    String?
+  kycStatus       SupplierStatus @default(PENDING)
+  onboardingDone  Boolean        @default(false)
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  products        SupplierProduct[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+model AdminProfile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  title     String?
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Plan {
+  id              String   @id @default(cuid())
+  name            String   @unique
+  description     String
+  priceMonthly    Int
+  storesLimit     Int
+  productsLimit   Int
+  generationsLimit Int
+  features        Json
+  stripePriceId   String?  @unique
+  subscriptions   Subscription[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  userId               String
+  planId               String
+  stripeCustomerId     String?
+  stripeSubscriptionId String?            @unique
+  status               SubscriptionStatus @default(TRIALING)
+  currentPeriodEnd     DateTime?
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan                 Plan               @relation(fields: [planId], references: [id])
+  payments             Payment[]
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+}
+
+model Store {
+  id                 String      @id @default(cuid())
+  userId             String
+  name               String
+  slug               String      @unique
+  status             StoreStatus @default(DRAFT)
+  heroCopy           String?
+  valueProposition   String?
+  trustCopy          String?
+  testimonials       Json?
+  faq                Json?
+  cta                String?
+  themeSuggestion    String?
+  brandColors        String?
+  productId          String?
+  user               User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product            Product?    @relation(fields: [productId], references: [id])
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+}
+
+model Product {
+  id                  String   @id @default(cuid())
+  userId              String
+  storeId             String?
+  title               String
+  description         String
+  shortDescription    String
+  targetAudience      String?
+  benefits            Json?
+  pricingSuggestion   Float?
+  compareAtPrice      Float?
+  adHeadlines         Json?
+  adPrimaryText       Json?
+  socialCaptions      Json?
+  mockupPrompts       Json?
+  imageAssetId        String?
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  store               Store[]
+  imageAsset          UploadedAsset? @relation(fields: [imageAssetId], references: [id])
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model SupplierProduct {
+  id               String          @id @default(cuid())
+  supplierProfileId String
+  title            String
+  description      String
+  price            Float
+  inventory        Int             @default(0)
+  shippingInfo     String?
+  imageUrls        Json?
+  supplierProfile  SupplierProfile @relation(fields: [supplierProfileId], references: [id], onDelete: Cascade)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+}
+
+model AIGeneration {
+  id              String   @id @default(cuid())
+  userId          String
+  inputImageUrl   String?
+  promptVersion   String
+  language        String   @default("en")
+  generationType  String
+  payload         Json
+  success         Boolean  @default(true)
+  errorMessage    String?
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt       DateTime @default(now())
+}
+
+model Payment {
+  id              String        @id @default(cuid())
+  userId          String
+  subscriptionId  String?
+  amount          Int
+  currency        String        @default("usd")
+  stripePaymentId String?
+  status          String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscription    Subscription? @relation(fields: [subscriptionId], references: [id])
+  createdAt       DateTime      @default(now())
+}
+
+model Trial {
+  id          String   @id @default(cuid())
+  userId      String
+  startDate   DateTime @default(now())
+  endDate     DateTime
+  active      Boolean  @default(true)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UsageMetrics {
+  id              String   @id @default(cuid())
+  userId          String
+  month           String
+  aiGenerations   Int      @default(0)
+  storesCreated   Int      @default(0)
+  productsCreated Int      @default(0)
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, month])
+}
+
+model UploadedAsset {
+  id         String   @id @default(cuid())
+  userId     String
+  type       String
+  url        String
+  mimeType   String?
+  size       Int?
+  metadata   Json?
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  products   Product[]
+  createdAt  DateTime @default(now())
+}

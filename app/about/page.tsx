@@ -1,0 +1,1 @@
+export default function AboutPage() { return <div className="card"><h1 className="text-3xl font-semibold">About Diverse</h1><p className="mt-2 text-slate-300">We build AI-native commerce infrastructure for modern retailers.</p></div>; }
