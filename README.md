@@ -11,7 +11,7 @@ Diverse is a production-oriented MVP that generates ecommerce stores from a prod
 
 ## MVP Flow (implemented)
 1. Retailer signup/login
-2. Upload product image
+2. Upload product image or paste hosted image URL
 3. AI analyzes image and generates store pack
 4. Retailer creates store from generation
 5. Retailer edits + publishes store
