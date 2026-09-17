@@ -4,6 +4,11 @@ const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 
+// Ensure JWT_SECRET is present
+if (!process.env.JWT_SECRET) {
+  throw new Error("FATAL ERROR: JWT_SECRET environment variable is missing.");
+}
+
 const app = express();
 
 // Middleware
