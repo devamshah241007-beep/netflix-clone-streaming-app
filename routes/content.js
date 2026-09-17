@@ -2,6 +2,10 @@ const express = require('express');
 const router = express.Router();
 const Content = require('../models/Content');
 
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
+
 // Get all content
 router.get('/', async (req, res) => {
   try {
@@ -11,9 +15,10 @@ router.get('/', async (req, res) => {
     if (type) query.type = type;
     if (genre) query.genre = genre;
     if (search) {
+      const sanitizedSearch = escapeRegExp(search);
       query.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
+        { title: { $regex: sanitizedSearch, $options: 'i' } },
+        { description: { $regex: sanitizedSearch, $options: 'i' } }
       ];
     }
 
