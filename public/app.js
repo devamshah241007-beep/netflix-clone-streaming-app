@@ -351,13 +351,17 @@ function handleNavigation(e) {
     }
 }
 
+function clearRows(rowIds) {
+    rowIds.forEach(id => {
+        const row = document.getElementById(id);
+        if (row) row.innerHTML = '';
+    });
+}
+
 function filterContent(type) {
     const filtered = sampleContent.filter(c => c.type === type);
-    document.getElementById('trendingRow').innerHTML = '';
+    clearRows(['trendingRow', 'comedyRow', 'dramaRow', 'documentaryRow']);
     renderContentRow('actionRow', filtered);
-    document.getElementById('comedyRow').innerHTML = '';
-    document.getElementById('dramaRow').innerHTML = '';
-    document.getElementById('documentaryRow').innerHTML = '';
 }
 
 function handleSearch(e) {
@@ -373,19 +377,13 @@ function handleSearch(e) {
     );
     
     renderContentRow('trendingRow', results);
-    document.getElementById('actionRow').innerHTML = '';
-    document.getElementById('comedyRow').innerHTML = '';
-    document.getElementById('dramaRow').innerHTML = '';
-    document.getElementById('documentaryRow').innerHTML = '';
+    clearRows(['actionRow', 'comedyRow', 'dramaRow', 'documentaryRow']);
 }
 
 function loadMyList() {
     // Demo: Show all content as "My List"
     renderContentRow('trendingRow', sampleContent);
-    document.getElementById('actionRow').innerHTML = '';
-    document.getElementById('comedyRow').innerHTML = '';
-    document.getElementById('dramaRow').innerHTML = '';
-    document.getElementById('documentaryRow').innerHTML = '';
+    clearRows(['actionRow', 'comedyRow', 'dramaRow', 'documentaryRow']);
 }
 
 // Player Functions
