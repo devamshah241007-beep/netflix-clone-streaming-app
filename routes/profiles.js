@@ -9,7 +9,7 @@ router.get('/', auth, async (req, res) => {
     const user = await User.findById(req.userId);
     res.json(user.profiles);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
@@ -28,7 +28,7 @@ router.post('/', auth, async (req, res) => {
 
     res.status(201).json(user.profiles);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
@@ -50,7 +50,7 @@ router.put('/:profileId', auth, async (req, res) => {
     await user.save();
     res.json(user.profiles);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
@@ -68,7 +68,7 @@ router.delete('/:profileId', auth, async (req, res) => {
 
     res.json(user.profiles);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: 'Server error' });
   }
 });
 

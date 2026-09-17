@@ -19,7 +19,7 @@ router.get('/', auth, async (req, res) => {
 
     res.json(watchlist);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
@@ -45,7 +45,7 @@ router.post('/add', auth, async (req, res) => {
 
     res.json(watchlist);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
@@ -65,7 +65,7 @@ router.post('/remove', auth, async (req, res) => {
 
     res.json(watchlist);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
@@ -101,7 +101,7 @@ router.post('/continue', auth, async (req, res) => {
     await watchlist.save();
     res.json(watchlist);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
