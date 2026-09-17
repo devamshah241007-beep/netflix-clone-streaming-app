@@ -43,7 +43,9 @@ router.post('/register', [
       }
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    // SECURITY: Prevent sensitive data exposure by logging server-side only
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
@@ -81,7 +83,9 @@ router.post('/login', [
       }
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    // SECURITY: Prevent sensitive data exposure by logging server-side only
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 

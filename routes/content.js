@@ -20,7 +20,9 @@ router.get('/', async (req, res) => {
     const content = await Content.find(query).sort({ createdAt: -1 });
     res.json(content);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    // SECURITY: Prevent sensitive data exposure by logging server-side only
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
@@ -30,7 +32,9 @@ router.get('/trending', async (req, res) => {
     const content = await Content.find({ trending: true }).limit(10);
     res.json(content);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    // SECURITY: Prevent sensitive data exposure by logging server-side only
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
@@ -40,7 +44,9 @@ router.get('/featured', async (req, res) => {
     const content = await Content.findOne({ featured: true });
     res.json(content);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    // SECURITY: Prevent sensitive data exposure by logging server-side only
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
@@ -58,7 +64,9 @@ router.get('/:id', async (req, res) => {
     
     res.json(content);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    // SECURITY: Prevent sensitive data exposure by logging server-side only
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
@@ -68,7 +76,9 @@ router.get('/genre/:genre', async (req, res) => {
     const content = await Content.find({ genre: req.params.genre });
     res.json(content);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    // SECURITY: Prevent sensitive data exposure by logging server-side only
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
