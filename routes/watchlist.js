@@ -3,6 +3,20 @@ const router = express.Router();
 const Watchlist = require('../models/Watchlist');
 const auth = require('../middleware/auth');
 
+/**
+ * Helper function to find a watchlist or create a new unsaved one
+ * @param {string} userId - The user ID
+ * @param {string} profileId - The profile ID
+ * @returns {Promise<Watchlist>} - The watchlist instance
+ */
+const getOrCreateWatchlist = async (userId, profileId) => {
+  let watchlist = await Watchlist.findOne({ userId, profileId });
+  if (!watchlist) {
+    watchlist = new Watchlist({ userId, profileId });
+  }
+  return watchlist;
+};
+
 // Get watchlist
 router.get('/', auth, async (req, res) => {
   try {
@@ -28,11 +42,7 @@ router.post('/add', auth, async (req, res) => {
   try {
     const { contentId, profileId } = req.body;
     
-    let watchlist = await Watchlist.findOne({ userId: req.userId, profileId });
-    
-    if (!watchlist) {
-      watchlist = new Watchlist({ userId: req.userId, profileId });
-    }
+    const watchlist = await getOrCreateWatchlist(req.userId, profileId);
 
     const exists = watchlist.content.some(item => 
       item.contentId.toString() === contentId
@@ -74,11 +84,7 @@ router.post('/continue', auth, async (req, res) => {
   try {
     const { contentId, profileId, progress, seasonNumber, episodeNumber } = req.body;
     
-    let watchlist = await Watchlist.findOne({ userId: req.userId, profileId });
-    
-    if (!watchlist) {
-      watchlist = new Watchlist({ userId: req.userId, profileId });
-    }
+    const watchlist = await getOrCreateWatchlist(req.userId, profileId);
 
     const existingIndex = watchlist.continueWatching.findIndex(item => 
       item.contentId.toString() === contentId
