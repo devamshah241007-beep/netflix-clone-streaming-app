@@ -170,8 +170,22 @@ function setupEventListeners() {
 }
 
 // Auth Functions
+function showAuthError(message) {
+    const errorEl = document.getElementById('authError');
+    if (errorEl) {
+        errorEl.textContent = message;
+        errorEl.classList.remove('hidden');
+    }
+}
+
 async function handleAuth(e) {
     e.preventDefault();
+
+    const errorEl = document.getElementById('authError');
+    if (errorEl) {
+        errorEl.classList.add('hidden');
+    }
+
     const email = document.getElementById('authEmail').value;
     const password = document.getElementById('authPassword').value;
     const isLogin = document.getElementById('authTitle').textContent === 'Sign In';
@@ -192,15 +206,11 @@ async function handleAuth(e) {
             localStorage.setItem('authToken', authToken);
             showProfileScreen();
         } else {
-            alert(data.message || 'Authentication failed');
+            showAuthError(data.message || 'Authentication failed');
         }
     } catch (error) {
         console.error('Auth error:', error);
-        // Demo mode - allow login without backend
-        authToken = 'demo-token';
-        currentUser = { email, profiles: [{ name: 'Demo User', avatar: '👤' }] };
-        localStorage.setItem('authToken', authToken);
-        showProfileScreen();
+        showAuthError('A network error occurred. Please try again.');
     }
 }
 
