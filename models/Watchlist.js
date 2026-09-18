@@ -35,4 +35,8 @@ const watchlistSchema = new mongoose.Schema({
   }]
 });
 
+// Performance optimization: Added compound index on userId and profileId to prevent full collection
+// scans on frequent lookups across all watchlist endpoints, improving lookup times to O(log n).
+watchlistSchema.index({ userId: 1, profileId: 1 });
+
 module.exports = mongoose.model('Watchlist', watchlistSchema);

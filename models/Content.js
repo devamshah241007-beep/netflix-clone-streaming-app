@@ -9,14 +9,18 @@ const contentSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  // Performance optimization: Added index for faster filtering by type in routes/content.js
   type: {
     type: String,
     enum: ['movie', 'series'],
-    required: true
+    required: true,
+    index: true
   },
+  // Performance optimization: Added index to speed up genre-based lookups
   genre: [{
     type: String,
-    enum: ['Action', 'Comedy', 'Drama', 'Horror', 'Sci-Fi', 'Romance', 'Thriller', 'Documentary', 'Animation', 'Fantasy']
+    enum: ['Action', 'Comedy', 'Drama', 'Horror', 'Sci-Fi', 'Romance', 'Thriller', 'Documentary', 'Animation', 'Fantasy'],
+    index: true
   }],
   releaseYear: Number,
   rating: {
@@ -43,13 +47,17 @@ const contentSchema = new mongoose.Schema({
       thumbnailUrl: String
     }]
   }],
+  // Performance optimization: Indexed 'trending' field as it's queried heavily in the /trending route
   trending: {
     type: Boolean,
-    default: false
+    default: false,
+    index: true
   },
+  // Performance optimization: Indexed 'featured' field for fast lookups in the /featured route
   featured: {
     type: Boolean,
-    default: false
+    default: false,
+    index: true
   },
   views: {
     type: Number,
