@@ -20,7 +20,7 @@
                 </ul>
             </div>
             <div class="nav-right">
-                <input type="text" id="searchInput" placeholder="Search..." class="search-input">
+                <input type="text" id="searchInput" placeholder="Search..." aria-label="Search content" class="search-input">
                 <div class="profile-menu">
                     <img src="https://via.placeholder.com/40" alt="Profile" class="profile-avatar" id="profileAvatar">
                     <div class="dropdown" id="profileDropdown">
@@ -39,8 +39,8 @@
             <div class="auth-box">
                 <h2 id="authTitle">Sign In</h2>
                 <form id="authForm">
-                    <input type="email" id="authEmail" placeholder="Email" required>
-                    <input type="password" id="authPassword" placeholder="Password" required>
+                    <input type="email" id="authEmail" placeholder="Email" aria-label="Email address" required>
+                    <input type="password" id="authPassword" placeholder="Password" aria-label="Password" required>
                     <button type="submit" class="btn-primary" id="authSubmit">Sign In</button>
                 </form>
                 <p class="auth-toggle">
@@ -106,7 +106,7 @@
     <!-- Video Player Modal -->
     <div id="playerModal" class="modal hidden">
         <div class="modal-content player-container">
-            <button class="close-btn" id="closePlayer">&times;</button>
+            <button class="close-btn" id="closePlayer" aria-label="Close video player">&times;</button>
             <video id="videoPlayer" controls>
                 <source src="" type="video/mp4">
                 Your browser does not support the video tag.
@@ -121,7 +121,7 @@
     <!-- Content Details Modal -->
     <div id="detailsModal" class="modal hidden">
         <div class="modal-content details-container">
-            <button class="close-btn" id="closeDetails">&times;</button>
+            <button class="close-btn" id="closeDetails" aria-label="Close content details">&times;</button>
             <div class="details-header">
                 <img id="detailsThumbnail" src="" alt="">
                 <div class="details-overlay">
