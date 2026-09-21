@@ -20,7 +20,7 @@
                 </ul>
             </div>
             <div class="nav-right">
-                <input type="text" id="searchInput" placeholder="Search..." class="search-input">
+                <input type="text" id="searchInput" placeholder="Search..." class="search-input" aria-label="Search content">
                 <div class="profile-menu">
                     <img src="https://via.placeholder.com/40" alt="Profile" class="profile-avatar" id="profileAvatar">
                     <div class="dropdown" id="profileDropdown">
@@ -39,8 +39,8 @@
             <div class="auth-box">
                 <h2 id="authTitle">Sign In</h2>
                 <form id="authForm">
-                    <input type="email" id="authEmail" placeholder="Email" required>
-                    <input type="password" id="authPassword" placeholder="Password" required>
+                    <input type="email" id="authEmail" placeholder="Email" aria-label="Email Address" required>
+                    <input type="password" id="authPassword" placeholder="Password" aria-label="Password" required>
                     <button type="submit" class="btn-primary" id="authSubmit">Sign In</button>
                 </form>
                 <p class="auth-toggle">
