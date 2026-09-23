@@ -17,7 +17,8 @@ router.get('/', async (req, res) => {
       ];
     }
 
-    const content = await Content.find(query).sort({ createdAt: -1 });
+    // ⚡ Bolt: Use .lean() for read-only query to bypass Mongoose document instantiation and reduce memory overhead
+    const content = await Content.find(query).sort({ createdAt: -1 }).lean();
     res.json(content);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -27,7 +28,8 @@ router.get('/', async (req, res) => {
 // Get trending content
 router.get('/trending', async (req, res) => {
   try {
-    const content = await Content.find({ trending: true }).limit(10);
+    // ⚡ Bolt: Use .lean() for read-only query to improve performance
+    const content = await Content.find({ trending: true }).limit(10).lean();
     res.json(content);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -37,7 +39,8 @@ router.get('/trending', async (req, res) => {
 // Get featured content
 router.get('/featured', async (req, res) => {
   try {
-    const content = await Content.findOne({ featured: true });
+    // ⚡ Bolt: Use .lean() for read-only query to improve performance
+    const content = await Content.findOne({ featured: true }).lean();
     res.json(content);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -65,7 +68,8 @@ router.get('/:id', async (req, res) => {
 // Get content by genre
 router.get('/genre/:genre', async (req, res) => {
   try {
-    const content = await Content.find({ genre: req.params.genre });
+    // ⚡ Bolt: Use .lean() for read-only query to improve performance
+    const content = await Content.find({ genre: req.params.genre }).lean();
     res.json(content);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
