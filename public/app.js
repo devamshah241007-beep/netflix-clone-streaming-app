@@ -148,7 +148,13 @@ function setupEventListeners() {
     });
     
     // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    // ⚡ Bolt Optimization: Debounce search input to prevent rapid, unnecessary DOM updates and filtering during typing.
+    // Expected Impact: Reduces main thread blocking and DOM recalculations while typing.
+    let searchTimeout;
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => handleSearch(e), 300);
+    });
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
@@ -159,8 +165,10 @@ function setupEventListeners() {
     document.getElementById('closeDetails').addEventListener('click', closeDetails);
     
     // Scroll effect
+    // ⚡ Bolt Optimization: Cache navbar element outside scroll listener to avoid redundant DOM lookups on every scroll event.
+    // Expected Impact: Reduces CPU usage during scrolling by avoiding repeated document.getElementById calls.
+    const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
-        const navbar = document.getElementById('navbar');
         if (window.scrollY > 100) {
             navbar.classList.add('scrolled');
         } else {
