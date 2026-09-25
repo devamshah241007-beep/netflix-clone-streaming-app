@@ -2,18 +2,24 @@ const express = require('express');
 const router = express.Router();
 const Content = require('../models/Content');
 
+// Helper to escape regex
+const escapeRegex = (string) => {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
+
 // Get all content
 router.get('/', async (req, res) => {
   try {
     const { type, genre, search } = req.query;
     let query = {};
 
-    if (type) query.type = type;
-    if (genre) query.genre = genre;
-    if (search) {
+    if (type && typeof type === 'string') query.type = type;
+    if (genre && typeof genre === 'string') query.genre = genre;
+    if (search && typeof search === 'string') {
+      const safeSearch = escapeRegex(search);
       query.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
+        { title: { $regex: safeSearch, $options: 'i' } },
+        { description: { $regex: safeSearch, $options: 'i' } }
       ];
     }
 
