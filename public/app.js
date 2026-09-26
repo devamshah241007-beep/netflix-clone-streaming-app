@@ -148,7 +148,9 @@ function setupEventListeners() {
     });
     
     // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    // ⚡ Bolt Performance Optimization: Debounce search input to prevent UI lag and reduce rapid DOM re-renders.
+    // Impact: Avoids executing O(N) filtering logic and expensive DOM repaints on every single keystroke.
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
@@ -349,6 +351,19 @@ function handleNavigation(e) {
             loadMyList();
             break;
     }
+}
+
+// ⚡ Bolt Utility: Debounce function to limit execution rate of expensive handlers
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
 }
 
 function filterContent(type) {
