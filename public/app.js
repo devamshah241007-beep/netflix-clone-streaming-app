@@ -175,6 +175,13 @@ async function handleAuth(e) {
     const email = document.getElementById('authEmail').value;
     const password = document.getElementById('authPassword').value;
     const isLogin = document.getElementById('authTitle').textContent === 'Sign In';
+    const submitBtn = document.getElementById('authSubmit');
+    const originalText = submitBtn.textContent;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Please wait...';
+    submitBtn.style.opacity = '0.7';
+    submitBtn.style.cursor = 'not-allowed';
     
     try {
         const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
@@ -201,6 +208,11 @@ async function handleAuth(e) {
         currentUser = { email, profiles: [{ name: 'Demo User', avatar: '👤' }] };
         localStorage.setItem('authToken', authToken);
         showProfileScreen();
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+        submitBtn.style.opacity = '1';
+        submitBtn.style.cursor = 'pointer';
     }
 }
 
