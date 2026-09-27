@@ -4,6 +4,20 @@ let currentUser = null;
 let currentProfile = null;
 let authToken = localStorage.getItem('authToken');
 
+// Utility Functions
+// ⚡ Bolt: Debounce function to limit the rate of function execution
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
 // Sample Content Data (Public Domain & Creative Commons)
 const sampleContent = [
     {
@@ -148,7 +162,9 @@ function setupEventListeners() {
     });
     
     // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    // ⚡ Bolt: Apply debounce to search input to reduce DOM updates and filtering overhead
+    const debouncedSearch = debounce(handleSearch, 300);
+    document.getElementById('searchInput').addEventListener('input', debouncedSearch);
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
@@ -159,8 +175,9 @@ function setupEventListeners() {
     document.getElementById('closeDetails').addEventListener('click', closeDetails);
     
     // Scroll effect
+    // ⚡ Bolt: Cache navbar element outside scroll event listener to avoid redundant DOM queries
+    const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
-        const navbar = document.getElementById('navbar');
         if (window.scrollY > 100) {
             navbar.classList.add('scrolled');
         } else {
