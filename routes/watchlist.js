@@ -7,10 +7,14 @@ const auth = require('../middleware/auth');
 router.get('/', auth, async (req, res) => {
   try {
     const { profileId } = req.query;
-    let watchlist = await Watchlist.findOne({ 
-      userId: req.userId, 
-      profileId 
-    }).populate('content.contentId continueWatching.contentId');
+
+    // 🛡️ Prevent NoSQL injection by ensuring profileId is a string if provided
+    const query = { userId: req.userId };
+    if (typeof profileId === 'string' && profileId) {
+      query.profileId = profileId;
+    }
+
+    let watchlist = await Watchlist.findOne(query).populate('content.contentId continueWatching.contentId');
 
     if (!watchlist) {
       watchlist = new Watchlist({ userId: req.userId, profileId });
