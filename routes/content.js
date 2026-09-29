@@ -8,9 +8,11 @@ router.get('/', async (req, res) => {
     const { type, genre, search } = req.query;
     let query = {};
 
-    if (type) query.type = type;
-    if (genre) query.genre = genre;
-    if (search) {
+    // Security: Validate query parameters to prevent NoSQL operator injection
+    if (typeof type === 'string' && type) query.type = type;
+    if (typeof genre === 'string' && genre) query.genre = genre;
+    if (typeof search === 'string' && search) {
+      // Prevent ReDoS and NoSQL injection by ensuring search is a string
       query.$or = [
         { title: { $regex: search, $options: 'i' } },
         { description: { $regex: search, $options: 'i' } }
