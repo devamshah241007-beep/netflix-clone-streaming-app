@@ -12,11 +12,13 @@ const contentSchema = new mongoose.Schema({
   type: {
     type: String,
     enum: ['movie', 'series'],
-    required: true
+    required: true,
+    index: true // ⚡ Bolt: Added index to speed up type-based filtering
   },
   genre: [{
     type: String,
-    enum: ['Action', 'Comedy', 'Drama', 'Horror', 'Sci-Fi', 'Romance', 'Thriller', 'Documentary', 'Animation', 'Fantasy']
+    enum: ['Action', 'Comedy', 'Drama', 'Horror', 'Sci-Fi', 'Romance', 'Thriller', 'Documentary', 'Animation', 'Fantasy'],
+    index: true // ⚡ Bolt: Added index to speed up genre-based filtering
   }],
   releaseYear: Number,
   rating: {
@@ -45,11 +47,13 @@ const contentSchema = new mongoose.Schema({
   }],
   trending: {
     type: Boolean,
-    default: false
+    default: false,
+    index: true // ⚡ Bolt: Added index to speed up trending queries
   },
   featured: {
     type: Boolean,
-    default: false
+    default: false,
+    index: true // ⚡ Bolt: Added index to speed up featured queries
   },
   views: {
     type: Number,

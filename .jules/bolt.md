@@ -1,0 +1,3 @@
+## 2024-05-24 - Unindexed Database Queries in Mongoose Schemas
+**Learning:** The Mongoose schemas in this application (e.g., `models/Content.js`) lacked database indexes on frequently queried fields like `trending`, `featured`, `genre`, and `type`. This is a common performance bottleneck in Node.js/MongoDB applications, causing full collection scans during read operations.
+**Action:** When working on backend optimization for MongoDB-backed applications, always check the schema definitions for missing indexes on frequently queried fields, especially boolean flags or categorical fields used for filtering.
