@@ -137,6 +137,17 @@ function initializeApp() {
     }
 }
 
+// Utility: Debounce function to limit the rate at which a function fires.
+// Expected performance impact: Prevents unnecessary heavy DOM manipulations
+// and array filtering on every keystroke in search.
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+}
+
 function setupEventListeners() {
     // Auth
     document.getElementById('authForm').addEventListener('submit', handleAuth);
@@ -147,8 +158,8 @@ function setupEventListeners() {
         link.addEventListener('click', handleNavigation);
     });
     
-    // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    // Search - Debounce the search input handler by 300ms
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
