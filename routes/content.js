@@ -2,18 +2,27 @@ const express = require('express');
 const router = express.Router();
 const Content = require('../models/Content');
 
+// Helper to escape regex special characters to prevent ReDoS
+const escapeRegex = (string) => {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
+
 // Get all content
 router.get('/', async (req, res) => {
   try {
     const { type, genre, search } = req.query;
     let query = {};
 
-    if (type) query.type = type;
-    if (genre) query.genre = genre;
-    if (search) {
+    // Validate query parameters to prevent NoSQL injection
+    if (typeof type === 'string' && type) query.type = type;
+    if (typeof genre === 'string' && genre) query.genre = genre;
+
+    if (typeof search === 'string' && search) {
+      // Escape search string to prevent ReDoS
+      const safeSearch = escapeRegex(search);
       query.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
+        { title: { $regex: safeSearch, $options: 'i' } },
+        { description: { $regex: safeSearch, $options: 'i' } }
       ];
     }
 
