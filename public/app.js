@@ -129,6 +129,18 @@ document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
 });
 
+
+// Utility: Debounce function to limit rate of execution
+function debounce(func, delay) {
+    let timeoutId;
+    return function (...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            func.apply(this, args);
+        }, delay);
+    };
+}
+
 function initializeApp() {
     if (authToken) {
         showProfileScreen();
@@ -148,7 +160,7 @@ function setupEventListeners() {
     });
     
     // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
