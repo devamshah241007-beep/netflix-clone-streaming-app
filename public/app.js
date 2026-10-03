@@ -148,7 +148,9 @@ function setupEventListeners() {
     });
     
     // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    // Optimization: Debounce search input to prevent excessive filtering and DOM updates on every keystroke
+    // Impact: Reduces CPU usage and main thread blocking by only triggering search 300ms after user stops typing
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
@@ -358,6 +360,19 @@ function filterContent(type) {
     document.getElementById('comedyRow').innerHTML = '';
     document.getElementById('dramaRow').innerHTML = '';
     document.getElementById('documentaryRow').innerHTML = '';
+}
+
+// Utility function for debouncing
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
 }
 
 function handleSearch(e) {
