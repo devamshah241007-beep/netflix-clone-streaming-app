@@ -7,10 +7,18 @@ const auth = require('../middleware/auth');
 router.get('/', auth, async (req, res) => {
   try {
     const { profileId } = req.query;
-    let watchlist = await Watchlist.findOne({ 
-      userId: req.userId, 
-      profileId 
-    }).populate('content.contentId continueWatching.contentId');
+
+    // Validate profileId to prevent NoSQL operator injection
+    if (profileId && typeof profileId !== 'string') {
+      return res.status(400).json({ message: 'Invalid profileId parameter' });
+    }
+
+    let query = { userId: req.userId };
+    if (profileId) {
+      query.profileId = profileId;
+    }
+
+    let watchlist = await Watchlist.findOne(query).populate('content.contentId continueWatching.contentId');
 
     if (!watchlist) {
       watchlist = new Watchlist({ userId: req.userId, profileId });
