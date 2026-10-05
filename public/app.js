@@ -148,7 +148,8 @@ function setupEventListeners() {
     });
     
     // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    // Performance optimization: Debounce search input to limit DOM updates and filtering computations
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
@@ -358,6 +359,20 @@ function filterContent(type) {
     document.getElementById('comedyRow').innerHTML = '';
     document.getElementById('dramaRow').innerHTML = '';
     document.getElementById('documentaryRow').innerHTML = '';
+}
+
+
+// Performance optimization: Debounce function to limit frequent function calls
+function debounce(func, wait) {
+    let timeout;
+    return function() {
+        const context = this;
+        const args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            func.apply(context, args);
+        }, wait);
+    };
 }
 
 function handleSearch(e) {
