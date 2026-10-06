@@ -148,7 +148,9 @@ function setupEventListeners() {
     });
     
     // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    // ⚡ Performance: Debounce search input to reduce DOM manipulations and filtering on every keystroke
+    const debouncedSearch = debounce(handleSearch, 300);
+    document.getElementById('searchInput').addEventListener('input', debouncedSearch);
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
@@ -440,5 +442,16 @@ function closeDetails() {
 }
 
 // Make functions globally accessible
+// Utility Functions
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            func.apply(this, args);
+        }, wait);
+    };
+}
+
 window.selectProfile = selectProfile;
 window.showDetails = showDetails;
