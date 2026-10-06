@@ -6,14 +6,23 @@ const Content = require('../models/Content');
 router.get('/', async (req, res) => {
   try {
     const { type, genre, search } = req.query;
+
+    if ((type !== undefined && typeof type !== 'string') ||
+        (genre !== undefined && typeof genre !== 'string') ||
+        (search !== undefined && typeof search !== 'string')) {
+      return res.status(400).json({ message: 'Invalid query parameters' });
+    }
+
     let query = {};
 
-    if (type) query.type = type;
-    if (genre) query.genre = genre;
-    if (search) {
+    if (typeof type === 'string' && type) query.type = type;
+    if (typeof genre === 'string' && genre) query.genre = genre;
+    if (typeof search === 'string' && search) {
+      // Escape special regex characters to prevent ReDoS
+      const safeSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       query.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
+        { title: { $regex: safeSearch, $options: 'i' } },
+        { description: { $regex: safeSearch, $options: 'i' } }
       ];
     }
 
