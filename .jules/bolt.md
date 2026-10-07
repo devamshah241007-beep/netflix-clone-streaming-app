@@ -1,0 +1,3 @@
+## 2023-10-27 - [Debounce Search Input]
+**Learning:** Adding a debounce to frequent DOM events (like keystrokes on a search input) in vanilla JavaScript is an effective way to improve performance by limiting redundant filtering logic and heavy DOM updates. Using `func.apply(this, args)` is critical to preserving the event listener's execution context.
+**Action:** Always check high-frequency event listeners (like `input`, `scroll`, or `resize`) for opportunities to implement throttling or debouncing to reduce overhead, while ensuring `this` binding is correctly preserved for standard DOM event handler logic.
