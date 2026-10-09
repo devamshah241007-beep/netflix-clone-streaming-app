@@ -129,6 +129,24 @@ document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
 });
 
+/**
+ * Debounce utility function
+ * 💡 What: Delays the execution of a function until after a specified wait time has elapsed since the last time it was invoked.
+ * 🎯 Why: Prevents excessive function calls (like filtering or API requests) during rapid continuous events like typing.
+ * 📊 Impact: Significantly reduces main thread blocking and DOM re-renders during search, leading to a smoother UX and less CPU usage.
+ */
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func.apply(this, args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
 function initializeApp() {
     if (authToken) {
         showProfileScreen();
@@ -148,7 +166,8 @@ function setupEventListeners() {
     });
     
     // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    // Debounce the search input handler by 300ms to reduce filtering and re-renders on every keystroke
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
