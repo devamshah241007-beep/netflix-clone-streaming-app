@@ -7,10 +7,17 @@ const auth = require('../middleware/auth');
 router.get('/', auth, async (req, res) => {
   try {
     const { profileId } = req.query;
-    let watchlist = await Watchlist.findOne({ 
-      userId: req.userId, 
-      profileId 
-    }).populate('content.contentId continueWatching.contentId');
+
+    // Validate type to prevent NoSQL injection
+    const query = { userId: req.userId };
+    if (typeof profileId === 'string' && profileId) {
+      query.profileId = profileId;
+    } else if (profileId) {
+       // If profileId exists but is not a string (e.g. an object), it might be an injection attempt
+       return res.status(400).json({ message: 'Invalid profileId format' });
+    }
+
+    let watchlist = await Watchlist.findOne(query).populate('content.contentId continueWatching.contentId');
 
     if (!watchlist) {
       watchlist = new Watchlist({ userId: req.userId, profileId });
