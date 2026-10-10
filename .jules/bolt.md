@@ -1,0 +1,3 @@
+## 2023-10-10 - Avoiding Unintended Dependency Lockfiles
+**Learning:** During performance optimizations requiring testing in a node environment, running `pnpm i` or equivalent commands may inadvertently generate massive `pnpm-lock.yaml` or `package-lock.json` files if they didn't exist previously. Committing these auto-generated lock files pollutes the PR, violates strict line-count limits (e.g., under 50 lines), and risks causing merge conflicts or deployment issues if not explicitly requested.
+**Action:** Always ensure temporary scripts and auto-generated lockfiles (like `pnpm-lock.yaml`) are explicitly deleted using `rm -f` or git tracked out (`git checkout -- <file>`) before committing to keep the patch focused and minimal.
