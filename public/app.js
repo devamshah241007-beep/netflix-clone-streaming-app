@@ -1,5 +1,18 @@
 // API Configuration
 const API_URL = window.location.origin;
+
+// Utility Functions
+// Debounce function to limit the rate at which a function is called.
+// This preserves the execution context (`this`) and arguments for the original function.
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            func.apply(this, args);
+        }, wait);
+    };
+}
 let currentUser = null;
 let currentProfile = null;
 let authToken = localStorage.getItem('authToken');
@@ -148,7 +161,9 @@ function setupEventListeners() {
     });
     
     // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    // Optimize performance by debouncing the search input handler.
+    // This reduces unnecessary DOM updates and filtering on every keystroke.
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
