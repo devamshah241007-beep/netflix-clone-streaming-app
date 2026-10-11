@@ -2,3 +2,7 @@
 **Vulnerability:** The application used a hardcoded string ('your_jwt_secret_change_this') as a fallback for `JWT_SECRET` in both authentication middleware and routes. If the `JWT_SECRET` environment variable wasn't set, attackers could forge valid JWTs.
 **Learning:** Hardcoded default secrets are a severe vulnerability because they are committed to version control and publicly known. Generating random fallback keys on startup introduces a separate vulnerability where active sessions are invalidated upon server restart and might cause load balancing issues or race conditions with imports.
 **Prevention:** Always enforce a fail-fast startup. If a critical security parameter like a cryptographic key is missing, throw an immediate `Error` preventing the app from starting up rather than silently degrading into an insecure or transiently-secure state.
+## 2024-05-31 - ReDoS and NoSQL Injection in Mongoose regex queries
+**Vulnerability:** Express `req.query` objects (like `search`, `type`, `genre`) were passed directly into Mongoose queries, including `$regex` operations, without type validation or escaping.
+**Learning:** This exposes the application to NoSQL operator injection (e.g., passing arrays like `?search[$ne]=`) and Regular Expression Denial of Service (ReDoS) because user input forms an unescaped regex.
+**Prevention:** Always validate Express `req.query` parameters as strings before using them in database queries, and escape all regex special characters (`replace(/[.*+?^${}()|[\]\\]/g, '\\$&')`) when constructing dynamic regexes.
