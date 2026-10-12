@@ -8,13 +8,28 @@ router.get('/', async (req, res) => {
     const { type, genre, search } = req.query;
     let query = {};
 
-    if (type) query.type = type;
-    if (genre) query.genre = genre;
-    if (search) {
-      query.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
-      ];
+    // Validate type parameter to prevent NoSQL injection
+    if (type !== undefined) {
+      if (typeof type !== 'string') return res.status(400).json({ message: 'Invalid type parameter' });
+      if (type) query.type = type;
+    }
+
+    // Validate genre parameter to prevent NoSQL injection
+    if (genre !== undefined) {
+      if (typeof genre !== 'string') return res.status(400).json({ message: 'Invalid genre parameter' });
+      if (genre) query.genre = genre;
+    }
+
+    // Validate search parameter and escape to prevent NoSQL injection and ReDoS
+    if (search !== undefined) {
+      if (typeof search !== 'string') return res.status(400).json({ message: 'Invalid search parameter' });
+      if (search) {
+        const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        query.$or = [
+          { title: { $regex: escapedSearch, $options: 'i' } },
+          { description: { $regex: escapedSearch, $options: 'i' } }
+        ];
+      }
     }
 
     const content = await Content.find(query).sort({ createdAt: -1 });
