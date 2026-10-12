@@ -4,6 +4,19 @@ let currentUser = null;
 let currentProfile = null;
 let authToken = localStorage.getItem('authToken');
 
+// Utility Functions
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func.apply(this, args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
 // Sample Content Data (Public Domain & Creative Commons)
 const sampleContent = [
     {
@@ -148,7 +161,9 @@ function setupEventListeners() {
     });
     
     // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    // Optimization: Debounce search input to prevent continuous DOM re-renders on every keystroke
+    // Impact: Significantly reduces function calls while typing; triggers search 300ms after user pauses typing.
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
