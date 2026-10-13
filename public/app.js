@@ -1,3 +1,16 @@
+// Utility Functions
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func.apply(this, args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
 // API Configuration
 const API_URL = window.location.origin;
 let currentUser = null;
@@ -147,8 +160,8 @@ function setupEventListeners() {
         link.addEventListener('click', handleNavigation);
     });
     
-    // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    // Search - Debounced to improve performance
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
