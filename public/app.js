@@ -4,6 +4,23 @@ let currentUser = null;
 let currentProfile = null;
 let authToken = localStorage.getItem('authToken');
 
+// Utilities
+/**
+ * Bolt Performance Optimization:
+ * Debounce prevents frequent consecutive executions of a function.
+ * Used here for the search input to delay the search execution until the user stops typing,
+ * reducing unnecessary DOM manipulations and potential API calls.
+ */
+function debounce(func, delay) {
+    let timeoutId;
+    return function (...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            func.apply(this, args);
+        }, delay);
+    };
+}
+
 // Sample Content Data (Public Domain & Creative Commons)
 const sampleContent = [
     {
@@ -148,7 +165,7 @@ function setupEventListeners() {
     });
     
     // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
