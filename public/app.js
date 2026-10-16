@@ -123,6 +123,26 @@ const sampleContent = [
     }
 ];
 
+// Utility Functions
+/**
+ * ⚡ Bolt Performance Optimization:
+ * Debounces a function call by a specified wait time.
+ * This reduces the frequency of expensive operations (like DOM updates or API calls)
+ * that are triggered by rapid, successive events (like keystrokes).
+ *
+ * Expected Impact: Reduces potentially hundreds of `handleSearch` calls
+ * and subsequent DOM re-renders to just one call per 300ms pause during typing.
+ */
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            func.apply(this, args);
+        }, wait);
+    };
+}
+
 // Initialize App
 document.addEventListener('DOMContentLoaded', () => {
     initializeApp();
@@ -148,7 +168,8 @@ function setupEventListeners() {
     });
     
     // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    // ⚡ Bolt Optimization: Debounce search input to prevent rapid filtering & rendering
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
