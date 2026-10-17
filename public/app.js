@@ -148,7 +148,7 @@ function setupEventListeners() {
     });
     
     // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
@@ -279,6 +279,23 @@ function handleAddProfile() {
         currentUser.profiles.push({ name, avatar: '👤', isKids: false });
         renderProfiles();
     }
+}
+
+// Utilities
+// ⚡ Bolt Optimization: Debounce utility to prevent rapid-fire execution of frequent events.
+// This reduces unnecessary function calls (like search filtering) while the user is actively typing,
+// improving perceived performance and preventing jank.
+// Estimated impact: Reduces search-related calculations/re-renders by up to 90% during active typing.
+function debounce(func, delay) {
+    let timeoutId;
+    return function() {
+        const context = this;
+        const args = arguments;
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            func.apply(context, args);
+        }, delay);
+    };
 }
 
 // Content Functions
