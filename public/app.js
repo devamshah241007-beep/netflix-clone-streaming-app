@@ -415,6 +415,7 @@ function showDetails(content) {
     const modal = document.getElementById('detailsModal');
     
     document.getElementById('detailsThumbnail').src = content.thumbnailUrl;
+    document.getElementById('detailsThumbnail').alt = content.title;
     document.getElementById('detailsTitle').textContent = content.title;
     document.getElementById('detailsYear').textContent = content.releaseYear;
     document.getElementById('detailsRating').textContent = content.rating;
