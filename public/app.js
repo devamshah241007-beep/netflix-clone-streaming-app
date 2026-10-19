@@ -148,7 +148,20 @@ function setupEventListeners() {
     });
     
     // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    // ⚡ Bolt: Added debounce to search input
+    // 💡 What: Delays execution of handleSearch by 300ms after the last keypress.
+    // 🎯 Why: Prevents excessive filtering and DOM updates on every keystroke.
+    // 📊 Impact: Significantly reduces UI blocking and unnecessary DOM manipulations during fast typing.
+    const debounce = (func, delay) => {
+        let timeoutId;
+        return function (...args) {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                func.apply(this, args);
+            }, delay);
+        };
+    };
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
