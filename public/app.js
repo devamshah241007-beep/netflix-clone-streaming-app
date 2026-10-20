@@ -137,6 +137,17 @@ function initializeApp() {
     }
 }
 
+// Utility Functions
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            func.apply(this, args);
+        }, wait);
+    };
+}
+
 function setupEventListeners() {
     // Auth
     document.getElementById('authForm').addEventListener('submit', handleAuth);
@@ -147,8 +158,8 @@ function setupEventListeners() {
         link.addEventListener('click', handleNavigation);
     });
     
-    // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    // Search (Optimized with debounce)
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
