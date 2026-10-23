@@ -1,3 +1,18 @@
+// ⚡ Bolt Performance Optimization: Debounce utility to limit the rate at which a function can fire.
+// Reduces main thread blocking and redundant operations for frequent events.
+// Impact: Expected to reduce function calls by up to 90% during rapid typing or scrolling.
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func.apply(this, args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
 // API Configuration
 const API_URL = window.location.origin;
 let currentUser = null;
@@ -148,7 +163,9 @@ function setupEventListeners() {
     });
     
     // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    // ⚡ Bolt Performance Optimization: Debounce search input to prevent firing filter logic on every keystroke
+    // Impact: Avoids redundant DOM manipulations and array filtering operations while typing
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
