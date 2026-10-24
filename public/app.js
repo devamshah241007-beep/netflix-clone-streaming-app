@@ -147,8 +147,23 @@ function setupEventListeners() {
         link.addEventListener('click', handleNavigation);
     });
     
+    // Utility for debouncing events
+    // ⚡ Bolt: Debounce search input to prevent rapid, unnecessary filtering on every keystroke.
+    // Impact: Significantly reduces the number of function executions and DOM updates when a user types quickly.
+    function debounce(func, delay) {
+        let timeoutId;
+        return function () {
+            const context = this;
+            const args = arguments;
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                func.apply(context, args);
+            }, delay);
+        };
+    }
+
     // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
