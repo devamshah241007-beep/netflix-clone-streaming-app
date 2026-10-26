@@ -1,3 +1,12 @@
+// Utility Functions
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+}
+
 // API Configuration
 const API_URL = window.location.origin;
 let currentUser = null;
@@ -148,7 +157,9 @@ function setupEventListeners() {
     });
     
     // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    // Optimization: Debounce search input to prevent excessive DOM updates and filtering during typing
+    // Expected impact: Significantly reduces JavaScript thread blocking and rendering layout trashing while users type
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
