@@ -8,12 +8,28 @@ router.get('/', async (req, res) => {
     const { type, genre, search } = req.query;
     let query = {};
 
+    // Validate type parameter to prevent NoSQL injection
+    if (type && typeof type !== 'string') {
+      return res.status(400).json({ message: 'Invalid type parameter' });
+    }
     if (type) query.type = type;
+
+    // Validate genre parameter to prevent NoSQL injection
+    if (genre && typeof genre !== 'string') {
+      return res.status(400).json({ message: 'Invalid genre parameter' });
+    }
     if (genre) query.genre = genre;
+
+    // Validate and sanitize search parameter to prevent NoSQL injection and ReDoS
+    if (search && typeof search !== 'string') {
+      return res.status(400).json({ message: 'Invalid search parameter' });
+    }
     if (search) {
+      // Escape special regex characters to mitigate ReDoS vulnerabilities
+      const safeSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       query.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
+        { title: { $regex: safeSearch, $options: 'i' } },
+        { description: { $regex: safeSearch, $options: 'i' } }
       ];
     }
 
