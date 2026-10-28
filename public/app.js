@@ -137,6 +137,20 @@ function initializeApp() {
     }
 }
 
+// ⚡ Bolt Optimization: Debounce utility to limit frequency of function calls
+// Expected Impact: Reduces DOM manipulations during rapid typing, saving main thread time.
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func.apply(this, args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
 function setupEventListeners() {
     // Auth
     document.getElementById('authForm').addEventListener('submit', handleAuth);
@@ -147,8 +161,9 @@ function setupEventListeners() {
         link.addEventListener('click', handleNavigation);
     });
     
-    // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    // Search - Wrapped with debounce to prevent excessive filtering and rendering on every keystroke
+    const debouncedSearch = debounce(handleSearch, 300);
+    document.getElementById('searchInput').addEventListener('input', debouncedSearch);
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
