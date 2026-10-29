@@ -47,14 +47,18 @@ router.get('/featured', async (req, res) => {
 // Get content by ID
 router.get('/:id', async (req, res) => {
   try {
-    const content = await Content.findById(req.params.id);
+    // ⚡ Bolt Optimization: Use atomic findByIdAndUpdate instead of find + save
+    // Expected impact: Reduces database operations from 2 to 1 (~50% reduction in DB overhead)
+    // and prevents race conditions on the views counter.
+    const content = await Content.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { views: 1 } },
+      { new: true } // Return the updated document
+    );
+
     if (!content) {
       return res.status(404).json({ message: 'Content not found' });
     }
-    
-    // Increment views
-    content.views += 1;
-    await content.save();
     
     res.json(content);
   } catch (error) {
