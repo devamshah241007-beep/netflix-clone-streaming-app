@@ -1,6 +1,19 @@
 // API Configuration
 const API_URL = window.location.origin;
 let currentUser = null;
+
+// Utility functions
+function debounce(func, wait) {
+    let timeout;
+    return function() {
+        const context = this;
+        const args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+            func.apply(context, args);
+        }, wait);
+    };
+}
 let currentProfile = null;
 let authToken = localStorage.getItem('authToken');
 
@@ -148,7 +161,8 @@ function setupEventListeners() {
     });
     
     // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    // ⚡ Bolt Performance Optimization: Debounce search input to reduce processing
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
