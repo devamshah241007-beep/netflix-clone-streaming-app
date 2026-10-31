@@ -148,7 +148,8 @@ function setupEventListeners() {
     });
     
     // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    // ⚡ Bolt Performance Optimization: Debounce search input to avoid expensive filtering & DOM updates on every keystroke
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
@@ -437,6 +438,18 @@ function showDetails(content) {
 
 function closeDetails() {
     document.getElementById('detailsModal').classList.add('hidden');
+}
+
+// Utility functions
+// ⚡ Bolt Performance Optimization: Debounce function to limit execution rate of frequent events
+function debounce(func, delay) {
+    let timeoutId;
+    return function (...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            func.apply(this, args);
+        }, delay);
+    };
 }
 
 // Make functions globally accessible
