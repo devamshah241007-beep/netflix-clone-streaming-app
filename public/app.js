@@ -137,6 +137,19 @@ function initializeApp() {
     }
 }
 
+// Performance Optimization: Debounce function to limit frequent event handling
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func.apply(this, args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
 function setupEventListeners() {
     // Auth
     document.getElementById('authForm').addEventListener('submit', handleAuth);
@@ -148,7 +161,8 @@ function setupEventListeners() {
     });
     
     // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    // Performance Optimization: Debounce search input by 300ms to reduce rendering load when typing
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
