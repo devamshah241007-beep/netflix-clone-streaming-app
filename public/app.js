@@ -137,6 +137,21 @@ function initializeApp() {
     }
 }
 
+// ⚡ Bolt Performance Optimization:
+// Utility function to debounce rapidly firing events (like search inputs).
+// This reduces redundant DOM manipulations and potential API calls by only executing
+// the provided function after a specified delay period of inactivity.
+// Expected Impact: Significantly fewer rendering cycles and DOM updates during rapid typing.
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            func.apply(this, args);
+        }, wait);
+    };
+}
+
 function setupEventListeners() {
     // Auth
     document.getElementById('authForm').addEventListener('submit', handleAuth);
@@ -148,7 +163,9 @@ function setupEventListeners() {
     });
     
     // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    // ⚡ Bolt: Wrapped handleSearch in debounce with 300ms delay to prevent
+    // running the filter and rendering content row on every single keystroke.
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
