@@ -137,6 +137,17 @@ function initializeApp() {
     }
 }
 
+// ⚡ Bolt: Debounce function to prevent excessive DOM updates during search
+function debounce(func, delay) {
+    let timeoutId;
+    return function (...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            func.apply(this, args);
+        }, delay);
+    };
+}
+
 function setupEventListeners() {
     // Auth
     document.getElementById('authForm').addEventListener('submit', handleAuth);
@@ -148,7 +159,7 @@ function setupEventListeners() {
     });
     
     // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
