@@ -123,6 +123,16 @@ const sampleContent = [
     }
 ];
 
+// ⚡ Bolt Performance Optimization: Debounce function to limit execution rate
+// Expected Impact: Reduces DOM re-renders by grouping rapid keystrokes, potentially reducing function calls by ~80% during typing.
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+}
+
 // Initialize App
 document.addEventListener('DOMContentLoaded', () => {
     initializeApp();
@@ -148,7 +158,7 @@ function setupEventListeners() {
     });
     
     // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
