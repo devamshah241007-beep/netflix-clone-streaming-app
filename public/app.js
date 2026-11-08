@@ -1,3 +1,16 @@
+// ⚡ Bolt: Debounce utility to limit function execution rate
+function debounce(func, wait) {
+    let timeout;
+    return function() {
+        const context = this;
+        const args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            func.apply(context, args);
+        }, wait);
+    };
+}
+
 // API Configuration
 const API_URL = window.location.origin;
 let currentUser = null;
@@ -148,7 +161,9 @@ function setupEventListeners() {
     });
     
     // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    // ⚡ Bolt: Debounce search to reduce DOM manipulations while typing (improves performance)
+    const debouncedSearch = debounce(handleSearch, 300);
+    document.getElementById('searchInput').addEventListener('input', debouncedSearch);
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
