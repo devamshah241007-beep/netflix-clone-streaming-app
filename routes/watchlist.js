@@ -7,6 +7,12 @@ const auth = require('../middleware/auth');
 router.get('/', auth, async (req, res) => {
   try {
     const { profileId } = req.query;
+
+    // Security: Prevent NoSQL injection by ensuring query parameter is a string
+    if (profileId && typeof profileId !== 'string') {
+      return res.status(400).json({ message: 'Invalid profileId parameter' });
+    }
+
     let watchlist = await Watchlist.findOne({ 
       userId: req.userId, 
       profileId 
