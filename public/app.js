@@ -148,7 +148,21 @@ function setupEventListeners() {
     });
     
     // Search
-    document.getElementById('searchInput').addEventListener('input', handleSearch);
+    /*
+     * ⚡ Bolt Performance Optimization: Debounce search input
+     * Expected impact: Reduces function calls, DOM repaints, and array filtering overhead by grouping rapid input events.
+     * Prevents UI blocking during fast typing.
+     */
+    function debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                func.apply(this, args);
+            }, wait);
+        };
+    }
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 300));
     
     // Profile
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
