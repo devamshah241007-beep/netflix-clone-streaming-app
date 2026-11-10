@@ -6,6 +6,14 @@ const Content = require('../models/Content');
 router.get('/', async (req, res) => {
   try {
     const { type, genre, search } = req.query;
+
+    // Prevent NoSQL injection by ensuring query params are strings
+    if ((type && typeof type !== 'string') ||
+        (genre && typeof genre !== 'string') ||
+        (search && typeof search !== 'string')) {
+      return res.status(400).json({ message: 'Invalid query parameters' });
+    }
+
     let query = {};
 
     if (type) query.type = type;
